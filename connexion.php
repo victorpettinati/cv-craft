@@ -34,6 +34,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['utilisateur_id'] = $row['id'];
             $_SESSION['nom'] = $row['nom'];
             $_SESSION['prenom'] = $row['prenom'];
+            $_SESSION['email'] = $row['email'];
+            $_SESSION['coordonnee'] = $row['coordonnee'];
+            $_SESSION['resume'] = $row['resume'];
+            $_SESSION['diplome'] = $row['diplome'];
 
             // Rediriger vers la page de profil ou une autre page sécurisée
             header("Location: profil.php");

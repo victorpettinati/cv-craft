@@ -6,6 +6,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nom = $_POST['nom'];
     $prenom = $_POST['prenom'];
     $email = $_POST['email'];
+    $coordonnee = $_POST['coordonnee'];
+    $diplome = $_POST['diplome'];
+    $resume = $_POST['resume'];
     $mot_de_passe = $_POST['mot_de_passe'];
 
     // Connexion à la base de données
@@ -34,11 +37,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $mot_de_passe_hache = password_hash($mot_de_passe, PASSWORD_BCRYPT);
 
         // Insérer l'utilisateur dans la base de données
-        $sql = "INSERT INTO utilisateur (nom, prenom, email, mot_de_passe) VALUES (:nom, :prenom, :email, :mot_de_passe)";
+        $sql = "INSERT INTO utilisateur (nom, prenom, email, coordonnee, diplome, resume, mot_de_passe) VALUES (:nom, :prenom, :email, :coordonnee, :diplome, :resume :mot_de_passe)";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':nom', $nom, PDO::PARAM_STR);
         $stmt->bindParam(':prenom', $prenom, PDO::PARAM_STR);
         $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+        $stmt->bindParam(':coordonnee', $coordonnee, PDO::PARAM_STR);
+        $stmt->bindParam(':diplome', $diplome, PDO::PARAM_STR);
+        $stmt->bindParam(':resume', $resume, PDO::PARAM_STR);
         $stmt->bindParam(':mot_de_passe', $mot_de_passe_hache, PDO::PARAM_STR);
 
         if ($stmt->execute()) {
@@ -71,6 +77,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <label for="email">Adresse e-mail :</label>
         <input type="email" id="email" name="email" required><br>
+
+        <label for="coordonnee">Coordonnee :</label>
+        <input type="text" id="coordonnee" name="coordonnee" required><br>
+
+        <label for="diplome">Diplome :</label>
+        <input type="text" id="diplome" name="diplome" required><br>
+
+        <label for="resume">Resume :</label>
+        <input type="text" id="resume" name="resume" required><br>
 
         <label for="mot_de_passe">Mot de passe :</label>
         <input type="password" id="mot_de_passe" name="mot_de_passe" required><br>

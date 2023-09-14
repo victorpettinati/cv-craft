@@ -7,9 +7,21 @@ if (!isset($_SESSION['utilisateur_id'])) {
     exit();
 }
 
+// Si l'utilisateur clique sur le bouton de déconnexion
+if (isset($_POST['deconnexion'])) {
+    // Détruire la session et rediriger vers la page de connexion
+    session_destroy();
+    header("Location: connexion.php");
+    exit();
+}
+
 // Récupérer les informations de l'utilisateur depuis la session
 $nom = $_SESSION['nom'];
 $prenom = $_SESSION['prenom'];
+$email = $_SESSION['email'];
+$coordonnee = $_SESSION['coordonnee'];
+// $diplome = $_SESSION['diplome'];
+// $resume = $_SESSION['resume'];
 
 // Récupérer d'autres informations de l'utilisateur depuis la base de données (ajuste la requête en fonction de ta structure de base de données)
 $servername = "localhost";
@@ -36,32 +48,42 @@ if ($stmt->rowCount() > 0) {
     // ...
 
     // Génération du CV au format HTML
-    $cv_html = "<h1>CV de $prenom $nom</h1>";
+    $cv_html = "<h1> CV ".$row['nom'] ." ". $row['prenom']."</h1>";
+
+
 
     // Ajoute les informations de l'utilisateur au CV
-    $cv_html .= "<p>Nom : $nom</p>";
-    $cv_html .= "<p>Prénom : $prenom</p>";
+    $cv_html .= "<p> Nom : ".$row['nom'] . "</p>";
+    $cv_html .= "<p> Prenom : ".$row['prenom']. "</p>";
+    $cv_html .= "<p> Email : ".$row['email']. "</p>";
+    $cv_html .= "<p> Coordonnee : ".$row['coordonnee']. "</p>";
+    $cv_html .= "<p> Diplome : ".$row['diplome']. "</p>";
+    $cv_html .= "<p> Resume : ".$row['resume']. "</p>";    
     
-    // Exemple : Ajoute les compétences de l'utilisateur depuis la base de données (ajuste en fonction de ta structure de base de données)
-    $sql_competences = "SELECT competence FROM experience WHERE utilisateur_id = :utilisateur_id";
-    $stmt_competences = $conn->prepare($sql_competences);
-    $stmt_competences->bindParam(':utilisateur_id', $_SESSION['utilisateur_id'], PDO::PARAM_INT);
-    $stmt_competences->execute();
+    // Exemple : Récupérer toutes les informations de la table "experience" depuis la base de données (ajuste en fonction de ta structure de base de données)
+    $sql_experience = "SELECT * FROM experience WHERE utilisateur_id = :utilisateur_id";
+    $stmt_experience = $conn->prepare($sql_experience);
+    $stmt_experience->bindParam(':utilisateur_id', $_SESSION['utilisateur_id'], PDO::PARAM_INT);
+    $stmt_experience->execute();
 
-    if ($stmt_competences->rowCount() > 0) {
-        $cv_html .= "<h2>Compétences</h2>";
-        $cv_html .= "<ul>";
-        while ($competence_row = $stmt_competences->fetch(PDO::FETCH_ASSOC)) {
-            $cv_html .= "<li>" . $competence_row['competence'] . "</li>";
+    if ($stmt_experience->rowCount() > 0) {
+        $cv_html .= "<h2>Expériences</h2>";
+        while ($experience_row = $stmt_experience->fetch(PDO::FETCH_ASSOC)) {
+            $cv_html .= "<h3>Titre du poste : " . htmlspecialchars($experience_row['titre']) . "</h3>";
+            $cv_html .= "<p>Entreprise : " . htmlspecialchars($experience_row['entreprise']) . "</p>";
+            $cv_html .= "<p>Date de début : " . htmlspecialchars($experience_row['date_debut']) . "</p>";
+            $cv_html .= "<p>Date de fin : " . htmlspecialchars($experience_row['date_fin']) . "</p>";
+            $cv_html .= "<p>Description : " . htmlspecialchars($experience_row['description']) . "</p>";
+            $cv_html .= "<p>Compétence : " . htmlspecialchars($experience_row['competence']) . "</p>";
+            // $cv_html .= "<p>Coordonnée : " . htmlspecialchars($experience_row['coordonnee']) . "</p>";
+            // $cv_html .= "<p>Résumé : " . htmlspecialchars($experience_row['resume']) . "</p>";
+            // $cv_html .= "<p>Diplôme : " . htmlspecialchars($experience_row['diplome']) . "</p>";
         }
-        $cv_html .= "</ul>";
     }
     
     // Ajoute d'autres informations au CV (ajuste en fonction de ta structure de base de données)
-    // ...
     
 } else {
-    // L'utilisateur n'a pas été trouvé dans la base de données
     header("Location: deconnexion.php");
     exit();
 }
@@ -76,11 +98,21 @@ if ($stmt->rowCount() > 0) {
     <title>Profil</title>
 </head>
 <body>
-    <h1>Profil de <?php echo $prenom . ' ' . $nom; ?></h1>
-    
-    <!-- Afficher le CV généré au format HTML -->
-    <?php echo $cv_html; ?>
+    <?php echo $cv_html; ?> <!-- Affiche le CV généré -->
 
-    <!-- Ajoute d'autres éléments de la page de profil si nécessaire -->
+    <h1>Profil de <?php echo $_SESSION['prenom'] . ' ' . $_SESSION['nom']; ?></h1>
+
+        <!-- Bouton pour créer un CV -->
+        <form method="get" action="creation-cv.php">
+        <input type="submit" value="Créer un CV">
+    </form>
+
+    <!-- Bouton de déconnexion -->
+    <form method="post">
+        <input type="submit" name="deconnexion" value="Déconnexion">
+    </form>
+    
+    <!-- Le reste de ton code pour afficher le CV et d'autres informations du profil -->
+
 </body>
 </html>
