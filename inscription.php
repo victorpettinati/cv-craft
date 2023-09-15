@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $mot_de_passe_hache = password_hash($mot_de_passe, PASSWORD_BCRYPT);
 
-        $sql = "INSERT INTO utilisateur (nom, prenom, email, coordonnee, diplome, resume, mot_de_passe) VALUES (:nom, :prenom, :email, :coordonnee, :diplome, :resume :mot_de_passe)";
+        $sql = "INSERT INTO utilisateur (nom, prenom, email, coordonnee, diplome, resume, mot_de_passe) VALUES (:nom, :prenom, :email, :coordonnee, :diplome, :resume, :mot_de_passe)";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':nom', $nom, PDO::PARAM_STR);
         $stmt->bindParam(':prenom', $prenom, PDO::PARAM_STR);
