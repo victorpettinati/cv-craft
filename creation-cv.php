@@ -1,28 +1,23 @@
 <?php
-// Paramètres de la base de données
-$db_host = 'localhost';    // L'hôte de la base de données
-$db_name = 'cv_craft';    // Le nom de la base de données
-$db_user = 'root';    // Votre nom d'utilisateur MySQL
-$db_pass = 'Laplateforme.06!';    // Votre mot de passe MySQL
 
-// Connexion à la base de données avec PDO
+$db_host = 'localhost';    
+$db_name = 'cv_craft';    
+$db_user = 'root';    
+$db_pass = 'Laplateforme.06!'; 
+
 try {
     $pdo = new PDO("mysql:host=$db_host;dbname=$db_name;charset=utf8", $db_user, $db_pass);
-    // Activer les erreurs PDO
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die("Erreur de connexion à la base de données : " . $e->getMessage());
 }
 
-// Vérifiez d'abord si l'utilisateur est connecté
 session_start();
 if (!isset($_SESSION['utilisateur_id'])) {
-    // Redirigez l'utilisateur vers la page de connexion s'il n'est pas connecté
     header("Location: profil.php");
     exit;
 }
 
-// Vérifier si le formulaire a été soumis
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $titre = $_POST['titre'];
     $entreprise = $_POST['entreprise'];
@@ -33,14 +28,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $resume = $_POST['resume'];
     $diplome = $_POST['diplome'];
     
-    // Insérer les données dans la table 'experience'
     $user_id = $_SESSION['utilisateur_id'];
     $query = "INSERT INTO experience (utilisateur_id, titre, entreprise, date_debut, date_fin, description, competence) VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = $pdo->prepare($query);
     
     try {
         $stmt->execute([$user_id, $titre, $entreprise, $date_debut, $date_fin, $description, $competence]);
-        // Redirigez l'utilisateur vers une page de confirmation ou une autre page appropriée
         header("Location: profil.php");
         exit;
     } catch (PDOException $e) {

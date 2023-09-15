@@ -1,8 +1,7 @@
 <?php
-$message = ""; // Initialiser le message de confirmation ou d'erreur à une chaîne vide
+$message = ""; 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Récupérer les données du formulaire d'inscription
     $nom = $_POST['nom'];
     $prenom = $_POST['prenom'];
     $email = $_POST['email'];
@@ -11,7 +10,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $resume = $_POST['resume'];
     $mot_de_passe = $_POST['mot_de_passe'];
 
-    // Connexion à la base de données
     $servername = "localhost";
     $username = "root";
     $password = "Laplateforme.06!";
@@ -24,7 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("Erreur de connexion à la base de données : " . $e->getMessage());
     }
 
-    // Vérifier si l'adresse e-mail existe déjà dans la base de données
     $sql_check_email = "SELECT * FROM utilisateur WHERE email = :email";
     $stmt_check_email = $conn->prepare($sql_check_email);
     $stmt_check_email->bindParam(':email', $email, PDO::PARAM_STR);
@@ -33,10 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($stmt_check_email->rowCount() > 0) {
         $message = "L'adresse e-mail est déjà utilisée. Veuillez choisir une autre adresse.";
     } else {
-        // Hasher le mot de passe (utilisation de bcrypt pour la sécurité)
         $mot_de_passe_hache = password_hash($mot_de_passe, PASSWORD_BCRYPT);
 
-        // Insérer l'utilisateur dans la base de données
         $sql = "INSERT INTO utilisateur (nom, prenom, email, coordonnee, diplome, resume, mot_de_passe) VALUES (:nom, :prenom, :email, :coordonnee, :diplome, :resume :mot_de_passe)";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':nom', $nom, PDO::PARAM_STR);
@@ -48,7 +43,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':mot_de_passe', $mot_de_passe_hache, PDO::PARAM_STR);
 
         if ($stmt->execute()) {
-            // Rediriger vers la page de connexion après une inscription réussie
             header("Location: connexion.php");
             exit();
         } else {
@@ -93,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="submit" value="S'Inscrire">
     </form>
     <?php
-    // Afficher le message de confirmation ou d'erreur
+
     if (!empty($message)) {
         echo "<p>$message</p>";
     }
