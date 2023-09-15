@@ -89,6 +89,10 @@ if ($stmt->rowCount() > 0) {
         <input type="submit" value="Créer un CV">
     </form>
 
+    <form method="get" action="modification.php">
+    <input type="submit" value="Modifier mes informations">
+    </form>
+
     <form method="post">
         <input type="submit" name="deconnexion" value="Déconnexion">
     </form>

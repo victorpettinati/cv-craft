@@ -1,14 +1,12 @@
 <?php
-session_start(); // Démarrer la session
+session_start(); 
 
-$message = ""; // Initialiser le message de confirmation ou d'erreur à une chaîne vide
+$message = ""; 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Récupérer les données du formulaire de connexion
     $email_connexion = $_POST['email_connexion'];
     $mot_de_passe_connexion = $_POST['mot_de_passe_connexion'];
 
-    // Connexion à la base de données
     $servername = "localhost";
     $username = "root";
     $password = "Laplateforme.06!";
@@ -21,7 +19,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("Erreur de connexion à la base de données : " . $e->getMessage());
     }
 
-    // Vérifier les informations de connexion
     $sql = "SELECT * FROM utilisateur WHERE email = :email_connexion";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':email_connexion', $email_connexion, PDO::PARAM_STR);
@@ -30,7 +27,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($stmt->rowCount() > 0) {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if (password_verify($mot_de_passe_connexion, $row['mot_de_passe'])) {
-            // Les informations de connexion sont correctes
             $_SESSION['utilisateur_id'] = $row['id'];
             $_SESSION['nom'] = $row['nom'];
             $_SESSION['prenom'] = $row['prenom'];
@@ -39,7 +35,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['resume'] = $row['resume'];
             $_SESSION['diplome'] = $row['diplome'];
 
-            // Rediriger vers la page de profil ou une autre page sécurisée
             header("Location: profil.php");
             exit();
         } else {
@@ -71,7 +66,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="submit" value="Se Connecter">
     </form>
     <?php
-    // Afficher le message de confirmation ou d'erreur
     if (!empty($message)) {
         echo "<p>$message</p>";
     }

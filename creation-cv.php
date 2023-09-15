@@ -71,6 +71,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="text" name="competence" required><br>
         
         <input type="submit" value="Enregistrer">
+        
     </form>
+
+    
 </body>
 </html>
