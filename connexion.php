@@ -63,6 +63,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <label for="mot_de_passe_connexion">Mot de passe :</label>
         <input type="password" id="mot_de_passe_connexion" name="mot_de_passe_connexion" required><br>
 
+        <a href="inscription.php">S'inscrire</a>
+
         <input type="submit" value="Se Connecter">
     </form>
     <?php
